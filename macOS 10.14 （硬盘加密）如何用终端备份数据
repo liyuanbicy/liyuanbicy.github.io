@@ -1,0 +1,161 @@
+
+
+# 1.事件背景
+
+同学更换工位后 ，开机黑屏 无法正常进入桌面。且数据重要不能格盘安装。
+
+**初步判断系统或苹果硬件故障 尝试一下方法**
+
+1.  重置 Mac 的 SMC https://support.apple.com/zh-cn/HT201295 （操作未解决）
+1.  通过恢复密钥解锁后覆盖安装10.14系统 （依旧保持开机黑屏界面）
+1.  通过恢复密钥解锁后覆盖安装10.15系统 （依旧开机黑屏界面）
+1.  直接安装macOS 10.14在移动硬盘启动后，尝试解锁本地磁盘依旧卡在解锁界面。
+1.  通过其他电脑目标磁盘模式连接无法解锁磁盘（卡死）
+
+-   思考能否通过终端模式 解密硬盘后并导出文件 ，格盘重装？
+-   参考文档：
+-   https://www.zhihu.com/question/339310160（具体现象基本一致）
+-   https://blog.csdn.net/huanghailiang_ws/article/details/78153838
+-   （该文中单用户模式对加密硬盘不可用，故而只能使用恢复模式）
+
+# 2.备份数据方法
+
+## 难题
+
+由于10.14的Bug，在装载硬盘时不能输入解锁密码。
+
+通过雷电模式连接其他Mac 也无法解锁 和下图一致。
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e821565269c7477d849d478c1c7e295d~tplv-k3u1fbpfcp-zoom-1.image)
+
+## 解决办法
+
+进入恢复模式
+
+打开“实用工具”中的terminal，
+
+执行“resetpassword”后该硬盘就可mount、可读写了。
+
+（因检索不到用户，不能使用开机密码解锁10.14bug）
+
+只能使用忘记所有密码，通过输入恢复密钥来解锁（不输入新密码直接关闭窗口）
+
+然后cp -fR 将/Volumes/Machitosh HD/User 里面所需的东西全部拷贝到外置硬盘中。
+
+然后格盘重装即可！
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1ba485113d744fdd9d8141f9093e8219~tplv-k3u1fbpfcp-zoom-1.image)
+
+```
+Cp -r /Volumes/test/Users/bytedance  /Volumes/BAK
+
+拷贝磁盘test用户目录bytedance 下所有文件  到外置磁盘BAK中
+```
+
+拷贝过程中，不会有进度条。结束后会到输入状态
+
+cp (复制档案或目录)
+
+参数：
+
+# ```
+-a ：相当于 -pdr 的意思（参数pdr分别为：保留权限，复制软链接本身，递归复制  ）；  -p ：连同档案的属性一起复制过去，而非使用预设属性；  其他参数意义：  -d ：若来源文件为连结文件的属性(link file)，则复制连结文件属性而非档案本身；  -f ：为强制 (force) 的意思，若有重复或其它疑问时，不会询问使用者，而强制复制；  -i ：若目的档(destination)已经存在时，在覆盖时会先询问是否真的动作！  -l ：进行硬式连结 (hard link) 的连结档建立，而非复制档案本身；  -r ：递归持续复制，用于目录的复制行为；  -s ：复制成为符号连结文件 (symbolic link)，亦即『快捷方式』档案；  -u ：若 destination 比 source 旧才更新 destination。 
+```3.查看数据文件
+
+# ```
+Ls  /Volumes/data/Users/bytedance  列出 该目录的文件 
+```4.没有权限查看此内容
+
+数据导出到移动硬盘后，其他Mac无权限查看
+
+打开文件夹提示没有权限访问
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7116a5c0a0d4412f8a6fea536831af4d~tplv-k3u1fbpfcp-zoom-1.image)
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/977e4eea96e34e4482ea52628214b430~tplv-k3u1fbpfcp-zoom-1.image)
+
+1、在MAC电脑键盘上同时按下“Command+空格”，打开搜索框。
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7ab80b1b9bf2464abc771256da16ef93~tplv-k3u1fbpfcp-zoom-1.image)
+
+2、在弹出的内搜索框中，选择点击搜索框。
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ed0affcbb97a4e7b85674544b2a7504b~tplv-k3u1fbpfcp-zoom-1.image)
+
+3、在搜索框中，输入“终端.app”回车。
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8bc9e205247f496991657016ee1c3b14~tplv-k3u1fbpfcp-zoom-1.image)
+
+4、在弹出的权限命令框中，输入“chmod 775”。
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a87f4d1fefce4e32981f7e1b2ca0d16f~tplv-k3u1fbpfcp-zoom-1.image)
+
+5、文件拖入到权限命令之后，按键盘Enter。 （记得有空格）
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/97aacb16959d4354bf0a4fa4c9b700bf~tplv-k3u1fbpfcp-zoom-1.image)
+
+6、双击文件夹就不会没有权限了。
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2700334798e642a4831a25a9588af71a~tplv-k3u1fbpfcp-zoom-1.image)
+
+（文件较多的情况下需要时间过长）
+
+# 5.遇到的坑
+
+## Ls 或 cp 检索不到该路径
+
+```
+bytedancedeMacBook:~ bytedance$ ls /volumes
+
+Machitosh HD        demo14                macOS-20191029
+
+bytedancedeMacBook:~ bytedance$ ls /volumes/Machitosh HD
+
+ls: /volumes/Machitosh: No such file or directory
+
+ls: HD: No such file or directory
+
+bytedancedeMacBook:~ bytedance$ 
+
+bytedancedeMacBook:~ bytedance$ ls /volumes/Machitosh HD
+
+ls: /volumes/Machitosh: No such file or directory
+
+ls: HD: No such file or directory
+
+bytedancedeMacBook:~ bytedance$ 
+```
+
+**解决办法**
+
+在磁盘管理中 修改磁盘名称即可
+
+![](https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4b1d34773c7544b090a9f2eba1ee3711~tplv-k3u1fbpfcp-zoom-1.image)
+
+```
+bytedancedeMacBook:~ bytedance$ ls /volumes
+
+data                demo14                macOS-20191029
+
+bytedancedeMacBook:~ bytedance$ ls /volumes/data
+
+Applications                        etc
+
+Library                                home
+
+Network                                installer.failurerequests
+
+System                                net
+
+Users                                private
+
+Volumes                                sbin
+
+bin                                tmp
+
+cores                                usr
+
+dev                                var
+
+bytedancedeMacBook:~ bytedance$ 
+```
