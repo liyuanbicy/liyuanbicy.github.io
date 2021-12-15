@@ -32,7 +32,7 @@
 
 ### 更多内容
 
-[更多内容可以关注我的B站专栏](https://space.bilibili.com/23874043/article)
+[更多可以关注我的掘金谢谢](https://juejin.cn/user/3052703925683576/posts)
 
 
 
